@@ -1,8 +1,0 @@
-Use of stacks
-  Checking your web browse history
-  Back-tracking
-  Usage on lists
-  Efficient storage of data
-  Work tickets for workers
-  Black jack...??
-  Trump cards

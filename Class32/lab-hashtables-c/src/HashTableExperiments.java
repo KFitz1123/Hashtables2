@@ -79,6 +79,7 @@ public class HashTableExperiments {
       HashTable<String,String> htab) {
     pen.println("Setting anteater");
     htab.set("anteater", "anteater");
+    pen.println("Setting buffalo");
     htab.set("buffalo", "buffalo");
     checkGet(pen, htab, "anteater");
     checkGet(pen, htab, "buffalo");

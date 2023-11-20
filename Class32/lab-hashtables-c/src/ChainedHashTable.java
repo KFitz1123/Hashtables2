@@ -162,11 +162,15 @@ public class ChainedHashTable<K,V> implements HashTable<K,V> {
       } // if reporter != null
       throw new IndexOutOfBoundsException("Invalid key: " + key);
     } else {
-      Pair<K,V> pair = alist.get(0);
-      if (REPORT_BASIC_CALLS && (reporter != null)) {
-        reporter.report("get(" + key + ") => " + pair.value());
-      } // if reporter != null
-      return pair.value();
+      for (Pair<K,V> pair : alist) {
+        if (pair.key().equals( key)) {
+          if (REPORT_BASIC_CALLS && (reporter != null)) {
+            reporter.report("get(" + key + ") => " + pair.value());
+            }// if reporter
+          return pair.value();
+        }//if pairkey = key
+      }//for
+      return null;
     } // get
   } // get(K)
 
@@ -205,14 +209,22 @@ public class ChainedHashTable<K,V> implements HashTable<K,V> {
       alist = new ArrayList<Pair<K,V>>();
       this.buckets[index] = alist;
     } // if
+    boolean found = false;
+    for (Pair<K,V> pair : alist) {
+      if (pair.key().equals(key)){
+        result = pair.value();
+        alist.set(alist.indexOf(pair), new Pair<K,V>(key, value));
+        found = true;
+      }//if
+    }//for
+    if (!found){
     alist.add(new Pair<K,V>(key, value));
     ++this.size;
-
-    // Report activity, if appropriate
-    if (REPORT_BASIC_CALLS && (reporter != null)) {
+    }//if
+ // Report activity, if appropriate
+      if (REPORT_BASIC_CALLS && (reporter != null)) {
       reporter.report("adding '" + key + ":" + value + "' to bucket " + index);
-    } // if reporter != null
-
+  } // if reporter != null
     // And we're done
     return result;
   } // set(K,V)
@@ -304,11 +316,21 @@ public class ChainedHashTable<K,V> implements HashTable<K,V> {
    */
   void expand() {
     // Figure out the size of the new table
-    int newSize = 2 * this.buckets.length + rand.nextInt(10);
+    int newSize = 2 * this.buckets.length; //+ rand.nextInt(10);
     if (REPORT_BASIC_CALLS && (reporter != null)) {
       reporter.report("Expanding to " + newSize + " elements.");
     } // if reporter != null
-    // STUB
+    // Remember the old table
+    Object[] oldBuckets = this.buckets;
+    // Create a new table of that size.
+    this.buckets = new Object[newSize];
+    // Move all buckets from the old table to their appropriate
+    // location in the new table.
+    for (int i = 0; i < oldBuckets.length; i++) {
+      
+      this.buckets[i] = oldBuckets[i];
+
+    } // for
   } // expand()
 
   /**
